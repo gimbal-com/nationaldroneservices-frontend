@@ -9,7 +9,6 @@ import {
     Card,
     CardContent,
     CardHeader,
-    CardFooter,
     CardTitle
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,7 +16,6 @@ import { Button } from '@/components/ui/button';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -27,6 +25,9 @@ import {
 import Image from 'next/image';
 import Logo from '../../../assets/images/logo.png';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store/store';
+import { login } from '@/store/features/auth/authSlice';
 
 const formSchema = z.object({
     username: z.string().min(1, { message: 'Username is required.' }),
@@ -34,6 +35,8 @@ const formSchema = z.object({
 })
 
 const LoginPage: FC = () => {
+
+    const dispatch = useDispatch<AppDispatch>();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -44,7 +47,7 @@ const LoginPage: FC = () => {
     })
 
     const handleSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+        dispatch(login(values));
     }
 
     return (
