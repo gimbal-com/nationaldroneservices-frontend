@@ -1,3 +1,4 @@
+import { toast } from '@/hooks/use-toast';
 import { API_SERVER_URL } from '@/store/key';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
@@ -41,6 +42,10 @@ export const loadToken = createAsyncThunk('auth/loadToken', async ({ username, e
     return payload;
 
   } catch (error: any) {
+    console.log(error);
+
+    toast({description: error.response.data.message, variant: 'default'});
+    
     return rejectWithValue('Failed to load token');
   }
 });
@@ -48,8 +53,10 @@ export const loadToken = createAsyncThunk('auth/loadToken', async ({ username, e
 export const login = createAsyncThunk('auth/login', async (credentials: LoginCredentials, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${API_SERVER_URL}/api/login`, credentials);
+    toast({description: response.data.message, variant: 'default'});
     return response.data;
   } catch (error: any) {
+    toast({description: error.response.data.message, variant: 'destructive'});
     return rejectWithValue(error.response.data);
   }
 });
@@ -57,8 +64,10 @@ export const login = createAsyncThunk('auth/login', async (credentials: LoginCre
 export const register = createAsyncThunk('auth/register', async (userData: RegisterData, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${API_SERVER_URL}/api/register`, userData);
+    toast({description: response.data.message, variant: 'default'});
     return response.data;
   } catch (error: any) {
+    toast({description: error.response.data.message, variant: 'destructive'});
     return rejectWithValue(error.response.data);
   }
 });
