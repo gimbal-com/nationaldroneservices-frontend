@@ -23,11 +23,11 @@ import {
 } from '@/components/ui/form';
 
 import Image from 'next/image';
-import Logo from '../../../assets/images/logo.png';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { login } from '@/store/features/auth/authSlice';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
     username: z.string().min(1, { message: 'Username is required.' }),
@@ -37,6 +37,7 @@ const formSchema = z.object({
 const LoginPage: FC = () => {
 
     const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -46,8 +47,12 @@ const LoginPage: FC = () => {
         }
     })
 
-    const handleSubmit = (values: z.infer<typeof formSchema>) => {
-        dispatch(login(values));
+    const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+        const response = await dispatch(login(values));
+        
+        if (login.fulfilled.match(response)) {
+            router.push('/job');
+        }
     }
 
     return (
@@ -58,7 +63,7 @@ const LoginPage: FC = () => {
                         Login
                     </h2>
                 </CardTitle>
-                <Image src={Logo} width={400} height={200} alt='Logo' />
+                <Image src={'/images/logo.png'} width={400} height={200} alt='Logo' />
             </CardHeader>
             <CardContent>
                 <Form {...form}>

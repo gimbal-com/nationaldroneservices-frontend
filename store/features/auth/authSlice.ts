@@ -1,20 +1,23 @@
 import { toast } from '@/hooks/use-toast';
-import { API_SERVER_URL } from '@/store/key';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosInstance, { setAuthToken } from '@/lib/axios';
 
+export interface UserData {
+  username: string,
+  email: string,
+  accountType: string
+  id: number;
+}
 interface AuthState {
-  user: any;
-  token: string | null;
+  user: UserData | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
   user: null,
-  token: null,
   loading: false,
-  error: null,
+  error: null
 };
 
 interface LoginCredentials {
@@ -26,24 +29,22 @@ interface RegisterData {
   username: string;
   email: string;
   password: string;
-  type: string;
+  accountType: string;
 }
 
-export const loadToken = createAsyncThunk('auth/loadToken', async ({ username, email, accountType, token }: { username: string; email: string; accountType: string, token: string }, { rejectWithValue }) => {
+export const loadToken = createAsyncThunk('auth/loadToken', async ({ username, email, accountType, id }: { username: string; email: string; accountType: string, id: number }, { rejectWithValue }) => {
   try {
     const payload = {
       user: {
         username,
         email,
-        accountType
-      },
-      token: token
+        accountType,
+        id
+      }
     };
     return payload;
 
   } catch (error: any) {
-    console.log(error);
-
     toast({description: error.response.data.message, variant: 'default'});
     
     return rejectWithValue('Failed to load token');
@@ -52,8 +53,11 @@ export const loadToken = createAsyncThunk('auth/loadToken', async ({ username, e
 
 export const login = createAsyncThunk('auth/login', async (credentials: LoginCredentials, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${API_SERVER_URL}/api/login`, credentials);
+    const response = await axiosInstance.post(`/api/login`, credentials);
     toast({description: response.data.message, variant: 'default'});
+    // setAuthToken(response.data.token);
+    window.localStorage.setItem(`token`, response.data.token);
+    
     return response.data;
   } catch (error: any) {
     toast({description: error.response.data.message, variant: 'destructive'});
@@ -63,7 +67,7 @@ export const login = createAsyncThunk('auth/login', async (credentials: LoginCre
 
 export const register = createAsyncThunk('auth/register', async (userData: RegisterData, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${API_SERVER_URL}/api/register`, userData);
+    const response = await axiosInstance.post(`/api/register`, userData);
     toast({description: response.data.message, variant: 'default'});
     return response.data;
   } catch (error: any) {
@@ -78,7 +82,7 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       state.user = null;
-      state.token = null;
+      setAuthToken('');
       window.localStorage.removeItem('token');
     },
   },
@@ -91,8 +95,6 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
-        window.localStorage.setItem(`token`, action.payload.token);
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -105,7 +107,6 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
@@ -113,7 +114,6 @@ const authSlice = createSlice({
       })
       .addCase(loadToken.fulfilled, (state, action) => {
         state.loading = true;
-        state.token = action.payload.token;
         state.user = action.payload.user;
       })
       .addCase(loadToken.rejected, (state, action) => {

@@ -32,7 +32,6 @@ import {
     SelectValue
 } from '@/components/ui/select';
 
-import Logo from '../../../assets/images/logo.png';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { register } from '@/store/features/auth/authSlice';
@@ -41,7 +40,7 @@ const formSchema = z.object({
     username: z.string().min(1, {message: 'Username is required.'}),
     password: z.string().min(1, {message: 'Password is required.'}),
     email: z.string().email(),
-    type: z.enum(['client', 'pilot'])
+    accountType: z.enum(['client', 'pilot'])
 })
 
 const LoginPage: FC = () => {
@@ -54,7 +53,7 @@ const LoginPage: FC = () => {
             username: '',
             password: '',
             email: '',
-            type: 'client'
+            accountType: 'client'
         }
     })
 
@@ -70,7 +69,7 @@ const LoginPage: FC = () => {
                         Register
                     </h2>
                 </CardTitle>
-                <Image src={Logo} width={400} height={200} alt='Logo' />
+                <Image src={'/images/logo.png'} width={400} height={200} alt='Logo' />
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -116,7 +115,7 @@ const LoginPage: FC = () => {
                         />
                         <FormField
                             control={form.control}
-                            name='type'
+                            name='accountType'
                             render={({ field}) => (
                                 <FormItem>
                                     <FormLabel>Account Type</FormLabel>
