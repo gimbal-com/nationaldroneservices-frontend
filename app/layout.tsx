@@ -32,21 +32,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* Setting the language attribute to English for better accessibility and SEO. */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Applying the font variables and enabling antialiasing for smoother text rendering. */}
 
+        {/* Wrapping the entire application in ReduxProvider and AuthProvider to manage global state and authentication. */}
         <ReduxProvider>
           <AuthProvider>
             {children}
           </AuthProvider>
         </ReduxProvider>
-        {/* Wrapping the entire application in ReduxProvider and AuthProvider to manage global state and authentication. */}
 
-        <Toaster />
         {/* Adding a Toaster component for toast notifications (e.g., success or error messages). */}
+        <Toaster />
       </body>
     </html>
   );

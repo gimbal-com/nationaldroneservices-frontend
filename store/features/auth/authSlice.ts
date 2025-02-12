@@ -9,35 +9,34 @@ export interface UserData {
   accountType: string,
   id: number;
 }
-// Defining a TypeScript interface for user data to ensure type safety.
 
+// Defining the authentication state structure.
 interface AuthState {
   user: UserData | null;
   loading: boolean;
   error: string | null;
 }
-// Defining the authentication state structure.
 
+// Setting the initial state for authentication.
 const initialState: AuthState = {
   user: null,
   loading: false,
   error: null
 };
-// Setting the initial state for authentication.
 
+// Defining an interface for login credentials.
 interface LoginCredentials {
   username: string;
   password: string;
 }
-// Defining an interface for login credentials.
 
+// Defining an interface for registration data.
 interface RegisterData {
   username: string;
   email: string;
   password: string;
   accountType: string;
 }
-// Defining an interface for registration data.
 
 export const loadToken = createAsyncThunk(
   'auth/loadToken',
@@ -52,12 +51,9 @@ export const loadToken = createAsyncThunk(
         }
       };
       return payload;
-      // Simulating the process of loading user data into state.
-
     } catch (error: any) {
-      toast({description: error.response.data.message, variant: 'default'});
       // Displaying an error message if the token loading fails.
-
+      toast({description: error.response.data.message, variant: 'default'});
       return rejectWithValue('Failed to load token');
     }
   }
@@ -68,18 +64,17 @@ export const login = createAsyncThunk(
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(`/api/login`, credentials);
-      toast({description: response.data.message, variant: 'default'});
       // Showing a success message on login.
+      toast({description: response.data.message, variant: 'default'});
+      // setAuthToken(response.data.token); 
 
-      // setAuthToken(response.data.token); // This line is commented out, consider removing if unused.
-      window.localStorage.setItem(`token`, response.data.token);
       // Storing the authentication token in local storage.
+      window.localStorage.setItem(`token`, response.data.token);
 
       return response.data;
     } catch (error: any) {
-      toast({description: error.response.data.message, variant: 'destructive'});
       // Displaying an error message if login fails.
-
+      toast({description: error.response.data.message, variant: 'destructive'});
       return rejectWithValue(error.response.data);
     }
   }
@@ -90,14 +85,12 @@ export const register = createAsyncThunk(
   async (userData: RegisterData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post(`/api/register`, userData);
-      toast({description: response.data.message, variant: 'default'});
       // Showing a success message when registration is successful.
-
+      toast({description: response.data.message, variant: 'default'});
       return response.data;
     } catch (error: any) {
-      toast({description: error.response.data.message, variant: 'destructive'});
       // Displaying an error message if registration fails.
-
+      toast({description: error.response.data.message, variant: 'destructive'});
       return rejectWithValue(error.response.data);
     }
   }
@@ -109,11 +102,10 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       state.user = null;
-      setAuthToken('');
       // Clearing the authentication token.
-
-      window.localStorage.removeItem('token');
+      setAuthToken('');
       // Removing the token from local storage to log out the user.
+      window.localStorage.removeItem('token');
     },
   },
   extraReducers: (builder) => {
@@ -121,41 +113,33 @@ const authSlice = createSlice({
       .addCase(login.pending, (state) => {
         state.loading = true;
         state.error = null;
-        // Indicating that the login request is in progress.
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
-        // Storing the user data upon successful login.
+        state.user = action.payload.user; // Storing the user data upon successful login.
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-        // Storing the error message if login fails.
       })
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.error = null;
-        // Indicating that the registration request is in progress.
       })
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
-        // Storing the user data upon successful registration.
+        state.user = action.payload.user; // Storing the user data upon successful registration.
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-        // Storing the error message if registration fails.
       })
       .addCase(loadToken.fulfilled, (state, action) => {
         state.loading = true;
-        state.user = action.payload.user;
-        // Updating the user data when the token is loaded successfully.
+        state.user = action.payload.user;  // Updating the user data when the token is loaded successfully when reload the page.
       })
       .addCase(loadToken.rejected, (state, action) => {
         state.loading = false;
-        // Handling the error case for loading a token.
       });
   },
 });

@@ -48,7 +48,6 @@ const initialState: JobState = {
 }
 
 //Async Redux Action to call POST /api/jobs API to create a new job
-
 export const createJob = createAsyncThunk('jobs/createJob', async (jobData: any, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.post(`/api/jobs`, jobData);
@@ -61,7 +60,6 @@ export const createJob = createAsyncThunk('jobs/createJob', async (jobData: any,
 });
 
 //Async Redux Action to call GET /api/jobs API to get joblist
-
 export const getJobList = createAsyncThunk('jobs/getJobList', async (userId: any, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.get(`/api/jobs?userId=${userId}`);
