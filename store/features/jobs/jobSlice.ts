@@ -15,9 +15,9 @@ export interface JobData {
 
 export interface FolderData {
     id: number,
-    job_id: number,
+    job_id?: number,
     name: string,
-    created_at: string
+    created_at?: string
 }
 
 export interface FileDate {
@@ -79,6 +79,7 @@ export const getJobDetail = createAsyncThunk('jobs/getJobDetail', async (jobId: 
 export const getFoldersByJobId = createAsyncThunk('jobs/getFoldersByJobId', async (jobId: number, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.get(`/api/jobs/${jobId}/folders`);
+
         return response.data;
     } catch (error: any) {
         return rejectWithValue('Failed to get folders');
@@ -155,6 +156,37 @@ const jobSlice = createSlice({
                 state.jobDetail = action.payload.job;
                 state.loading = false;
                 state.error = null;
+            })
+            .addCase(createFolderByJobId.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createFolderByJobId.fulfilled, (state, action) => {
+                state.folderList.push(action.payload.folder),
+                    state.loading = false;
+            })
+            .addCase(getFoldersByJobId.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getFoldersByJobId.fulfilled, (state, action) => {
+                state.loading = false;
+                state.folderList = action.payload.folders;
+            })
+            .addCase(uploadFiles.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(uploadFiles.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(getFilesByJobIdAndFolderId.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getFilesByJobIdAndFolderId.fulfilled, (state, action) => {
+                state.loading = false;
+                state.fileList = action.payload.files;
             })
     }
 })
