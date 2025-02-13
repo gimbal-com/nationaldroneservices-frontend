@@ -97,7 +97,7 @@ export const register = createAsyncThunk(
   }
 );
 
-export const getPilotProfile = createAsyncThunk('auth/getPilotProfile', async (userId: number, { rejectWithValue }) => {
+export const getPilotCerts = createAsyncThunk('auth/getPilotCerts', async (userId: number, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.get(`/api/pilot/profile?userId=${userId}`);
     return response.data;
@@ -162,9 +162,11 @@ const authSlice = createSlice({
       .addCase(loadToken.rejected, (state, action) => {
         state.loading = false;
       })
-      .addCase(getPilotProfile.fulfilled, (state, action) => {
+      .addCase(getPilotCerts.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
+        if (state.user) {
+          state.user.certs = action.payload.certs;
+        }
       })
       .addCase(uploadPilotCertificates.fulfilled, (state, action) => {
         state.loading = false;
