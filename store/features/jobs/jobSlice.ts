@@ -50,7 +50,7 @@ const initialState: JobState = {
 //Async Redux Action to call POST /api/jobs API to create a new job
 export const createJob = createAsyncThunk('jobs/createJob', async (jobData: any, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/api/jobs`, jobData);
+        const response = await axiosInstance.post(`/api/client/jobs`, jobData);
         toast({ description: response.data.message, variant: 'default' });
         return response.data;
     } catch (error: any) {
@@ -62,7 +62,7 @@ export const createJob = createAsyncThunk('jobs/createJob', async (jobData: any,
 //Async Redux Action to call GET /api/jobs API to get joblist
 export const getJobList = createAsyncThunk('jobs/getJobList', async (userId: any, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/api/jobs?userId=${userId}`);
+        const response = await axiosInstance.get(`/api/client/jobs?userId=${userId}`);
         return response.data;
     } catch (error: any) {
         return rejectWithValue('Failed to get jobs');
@@ -72,7 +72,7 @@ export const getJobList = createAsyncThunk('jobs/getJobList', async (userId: any
 //Async Redux Action to call GET /api/jobs API to get jobDetail
 export const getJobDetail = createAsyncThunk('jobs/getJobDetail', async (jobId: number, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/api/jobs/${jobId}`);
+        const response = await axiosInstance.get(`/api/client/jobs/${jobId}`);
         return response.data;
     } catch (error: any) {
         return rejectWithValue('Failed to get job detail');
@@ -82,7 +82,7 @@ export const getJobDetail = createAsyncThunk('jobs/getJobDetail', async (jobId: 
 //Async Redux Action to call GET /api/jobs API to get Folder by JobId
 export const getFoldersByJobId = createAsyncThunk('jobs/getFoldersByJobId', async (jobId: number, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/api/jobs/${jobId}/folders`);
+        const response = await axiosInstance.get(`/api/client/jobs/${jobId}/folders`);
 
         return response.data;
     } catch (error: any) {
@@ -93,7 +93,7 @@ export const getFoldersByJobId = createAsyncThunk('jobs/getFoldersByJobId', asyn
 //Async Redux Action to call POST /api/jobs API to create Folder by JobId
 export const createFolderByJobId = createAsyncThunk('jobs/createFolderByJobId', async ({ jobId, name }: { jobId: number, name: string }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.post(`/api/jobs/${jobId}/folders`, { name });
+        const response = await axiosInstance.post(`/api/client/jobs/${jobId}/folders`, { name });
         toast({ description: response.data.message, variant: 'default' });
         return response.data;
     } catch (error: any) {
@@ -105,7 +105,7 @@ export const createFolderByJobId = createAsyncThunk('jobs/createFolderByJobId', 
 //Async Redux Action to call GET /api/jobs API to get Files by JobId and FolderId
 export const getFilesByJobIdAndFolderId = createAsyncThunk('jobs/getFilesByJobIdAndFolderId', async ({ jobId, folderId }: { jobId: number, folderId: number }, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.get(`/api/jobs/${jobId}/folders/${folderId}/files`);
+        const response = await axiosInstance.get(`/api/client/jobs/${jobId}/folders/${folderId}/files`);
         return response.data;
     } catch (error: any) {
         return rejectWithValue('Failed to get files');
@@ -120,7 +120,7 @@ export const uploadFiles = createAsyncThunk('jobs/uploadFiles', async ({ jobId, 
             formData.append('files', file);
         });
 
-        const response = await axiosInstance.post(`/api/jobs/${jobId}/folders/${folderId}/files`, formData, {
+        const response = await axiosInstance.post(`/api/client/jobs/${jobId}/folders/${folderId}/files`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

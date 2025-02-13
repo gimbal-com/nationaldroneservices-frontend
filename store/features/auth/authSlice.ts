@@ -8,6 +8,7 @@ export interface UserData {
   email: string,
   accountType: string,
   id: number;
+  certs?: { user_id: number, path: string }[]
 }
 
 // Defining the authentication state structure.
@@ -96,6 +97,26 @@ export const register = createAsyncThunk(
   }
 );
 
+export const getPilotProfile = createAsyncThunk('auth/getPilotProfile', async (userId: number, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.get(`/api/pilot/profile?userId=${userId}`);
+    return response.data;
+  } catch (err: any) {
+    return rejectWithValue(err.response.data);
+  }
+})
+
+export const uploadPilotCertificates = createAsyncThunk('jobs/uploadFiles', async ({ userId, files }: { userId: number, files: File[] }, { rejectWithValue }) => {
+  try {
+    const response = await axiosInstance.post(`api/pilot/profile/certs?userId=${userId}`, files);
+    toast({description: response.data.message, variant: 'default'});
+    return response.data;
+  } catch (err: any) {
+    toast({description: err.response.data.message, variant: 'destructive'});
+    return rejectWithValue(err.response.data);
+  }
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -139,6 +160,13 @@ const authSlice = createSlice({
         state.user = action.payload.user;  // Updating the user data when the token is loaded successfully when reload the page.
       })
       .addCase(loadToken.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getPilotProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(uploadPilotCertificates.fulfilled, (state, action) => {
         state.loading = false;
       });
   },

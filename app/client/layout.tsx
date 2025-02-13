@@ -11,7 +11,7 @@ import { UserData } from '@/store/features/auth/authSlice';
 import { Button } from '@/components/ui/button';
 
 // Define the MainLayout component, accepting children as a prop
-const MainLayout = ({ children }: { children: ReactNode }) => {
+const ClientLayout = ({ children }: { children: ReactNode }) => {
     
     // Retrieve user data from Redux store
     const user = useSelector<RootState>(store => store.auth.user) as UserData;
@@ -70,4 +70,4 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
     )
 }
 
-export default MainLayout;
+export default ClientLayout;

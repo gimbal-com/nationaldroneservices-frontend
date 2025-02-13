@@ -71,7 +71,7 @@ const JobDetail = () => {
     // Handle folder item click and update URL
     const handleClickFolderItem = (folderId: number) => {
         setActiveFolderId(folderId);
-        router.push(`/job/${id}?folderId=${folderId}`);
+        router.push(`/client/job/${id}?folderId=${folderId}`);
     }
 
     // Reset file selection when upload dialog is closed
@@ -104,7 +104,7 @@ const JobDetail = () => {
         <div className="p-4">
             <div className="flex items-center justify-between">
                 <span className="font-bold text-xl">{`Details of "${jobDetail?.title}"`}</span>
-                <Link href={'/job'}>
+                <Link href={'/client/job'}>
                     <Button size="sm">
                         <ArrowLeftIcon />
                         Return to List
@@ -174,6 +174,28 @@ const JobDetail = () => {
                                 <PlusIcon />
                                 Upload Images
                             </Button>
+                            <Dialog open={isUploadDialogOpen} onOpenChange={() => setIsUploadDialogOpen(!isUploadDialogOpen)}>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Upload Images</DialogTitle>
+                                    </DialogHeader>
+
+                                    <Input type="file" onChange={(e) => setSelectedFiles(Array.from(e.target.files || []))} multiple />
+
+                                    <DialogFooter>
+                                        <Button
+                                            onClick={handleUploadFiles}    
+                                        >
+                                            Upload
+                                        </Button>
+                                        <Button
+                                            onClick={handleUploadCancel}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
 

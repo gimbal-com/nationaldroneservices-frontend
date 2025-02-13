@@ -106,7 +106,7 @@ const JobAddPage = () => {
         <div className="p-4">
             <div className="flex items-center justify-between mb-4">
                 <span className="font-bold text-xl">Create a New Job</span>
-                <Link href={'/job'}>
+                <Link href={'/client/job'}>
                     <Button size={'sm'}>
                         <ArrowLeftIcon /> {/* Left arrow icon */}
                         Return to List

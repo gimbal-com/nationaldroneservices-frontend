@@ -28,7 +28,7 @@ const JobList = () => {
     // Handler function that is called when a row in the table is clicked.
     // It navigates to the details page of the selected job.
     const handleRowClick = (id: number) => {
-        router.push(`/job/${id}`); // Navigate to the job detail page based on the job ID.
+        router.push(`/client/job/${id}`); // Navigate to the job detail page based on the job ID.
     }
 
     // useEffect hook that fetches the job list when the component mounts (or when userId changes).
@@ -44,7 +44,7 @@ const JobList = () => {
                 <div className='flex items-center justify-between'>
                     <span className='text-xl font-bold'>Job List</span> {/* Title of the page */}
                     {/* Link to navigate to the Job Creation page */}
-                    <Link href={'/job/add'}>
+                    <Link href={'/client/job/add'}>
                         <Button size='sm' variant='default'>
                             <PlusIcon /> {/* Display a plus icon indicating the creation of a new job */}
                             Create a Job

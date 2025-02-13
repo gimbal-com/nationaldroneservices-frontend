@@ -54,7 +54,16 @@ const LoginPage: FC = () => {
         const response = await dispatch(login(values)); // Dispatch login action
         
         if (login.fulfilled.match(response)) {
-            router.push('/job'); // Redirect to job page on successful login
+            let accountType = response.payload.user.accountType;
+            
+            // Redirect to job page on successful login
+            if(accountType === 'pilot') {
+                router.push(`/pilot/profile/${response.payload.user.id}`); 
+            } else if(accountType === 'client') {
+                router.push(`/client/job`);
+            } else {
+                console.log('You will be redirected to admin page');
+            }
         }
     }
 
